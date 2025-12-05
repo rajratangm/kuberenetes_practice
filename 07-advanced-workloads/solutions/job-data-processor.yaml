@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processor
+  namespace: default
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Processing data" && sleep 30']
+      restartPolicy: Never
+

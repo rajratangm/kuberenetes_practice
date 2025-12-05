@@ -1,0 +1,18 @@
+# Solution for Scenario 2: Service Not Accessible
+# Fixed service with correct selector
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: production
+spec:
+  type: ClusterIP
+  selector:
+    app: web
+    tier: frontend
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+

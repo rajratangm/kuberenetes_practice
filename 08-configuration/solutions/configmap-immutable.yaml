@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: immutable-config
+  namespace: default
+immutable: true
+data:
+  key1: value1
+  key2: value2
+

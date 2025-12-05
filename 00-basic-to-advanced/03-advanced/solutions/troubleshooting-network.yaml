@@ -1,0 +1,32 @@
+# Troubleshooting guide for network issues
+# This is a reference document, not a YAML file
+
+# Diagnostic Steps:
+# 1. Test pod-to-pod connectivity
+kubectl run test1 --image=busybox:1.35 --rm -it --restart=Never -- wget -O- http://<pod-ip>:80
+
+# 2. Test pod-to-service
+kubectl run test --image=busybox:1.35 --rm -it --restart=Never -- wget -O- http://<service-name>:80
+
+# 3. Test DNS
+kubectl run test --image=busybox:1.35 --rm -it --restart=Never -- nslookup <service-name>
+
+# 4. Check NetworkPolicies
+kubectl get networkpolicy
+kubectl describe networkpolicy <policy-name>
+
+# 5. Check service endpoints
+kubectl get endpoints <service-name>
+
+# 6. Check service selector
+kubectl get svc <service-name> -o yaml | grep selector
+
+# 7. Check pod labels
+kubectl get pods --show-labels
+
+# Common fixes:
+# - Fix service selector to match pod labels
+# - Update NetworkPolicy rules
+# - Verify pods are running
+# - Check DNS resolution
+

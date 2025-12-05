@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-configmap-envfrom
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: busybox:1.35
+    command: ['sh', '-c', 'env && sleep 3600']
+    envFrom:
+    - configMapRef:
+        name: app-config
+    - prefix: CUSTOM_
+      configMapRef:
+        name: app-config
+

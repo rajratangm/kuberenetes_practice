@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: compute-monitor
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: compute-monitor
+  template:
+    metadata:
+      labels:
+        app: compute-monitor
+    spec:
+      nodeSelector:
+        node-type: compute
+      containers:
+      - name: monitor
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Monitoring compute node" && sleep 3600']
+

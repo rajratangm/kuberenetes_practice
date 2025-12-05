@@ -1,0 +1,35 @@
+# Solution for Scenario 7: Persistent Volume Not Binding
+# PV and PVC with matching requirements
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-manual
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: fast-ssd
+  hostPath:
+    path: /mnt/data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+  namespace: default
+spec:
+  storageClassName: fast-ssd
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  # Ensure:
+  # 1. PV accessModes match PVC accessModes
+  # 2. StorageClass names match
+  # 3. PV capacity >= PVC request
+  # 4. PV is Available (not Bound)
+

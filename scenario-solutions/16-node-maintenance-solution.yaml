@@ -1,0 +1,28 @@
+# Solution for Scenario 16: Node Maintenance with Zero Downtime
+# Step-by-step procedure (commands, not YAML)
+
+# Step 1: Cordon the node
+# kubectl cordon worker-node-1
+
+# Step 2: Drain the node
+# kubectl drain worker-node-1 --ignore-daemonsets --delete-emptydir-data
+
+# Step 3: Monitor pod rescheduling
+# kubectl get pods --all-namespaces -o wide | grep worker-node-1
+# kubectl get pods --all-namespaces -o wide | grep -v worker-node-1
+
+# Step 4: Perform maintenance (simulated)
+# - Update system packages
+# - Reboot if needed
+# - Hardware maintenance
+# etc.
+
+# Step 5: Uncordon the node
+# kubectl uncordon worker-node-1
+
+# Step 6: Verify
+# kubectl get nodes
+# kubectl get pods --all-namespaces
+
+# Note: This is a procedure, not a YAML resource
+

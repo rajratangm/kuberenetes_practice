@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lifecycle-pod
+  namespace: default
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21
+    lifecycle:
+      postStart:
+        exec:
+          command: ['/bin/sh', '-c', 'echo "Started" > /tmp/started']
+      preStop:
+        exec:
+          command: ['/bin/sh', '-c', 'sleep 10']
+    volumeMounts:
+    - name: tmp
+      mountPath: /tmp
+  volumes:
+  - name: tmp
+    emptyDir: {}
+

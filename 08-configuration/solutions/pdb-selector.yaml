@@ -1,0 +1,12 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: web-pdb-selector
+  namespace: default
+spec:
+  minAvailable: 3
+  selector:
+    matchLabels:
+      app: web
+      env: production
+

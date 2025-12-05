@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: compute-monitor
+spec:
+  selector:
+    matchLabels:
+      app: compute-monitor
+  template:
+    metadata:
+      labels:
+        app: compute-monitor
+    spec:
+      nodeSelector:
+        node-type: compute
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: monitor
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Monitoring" && sleep 3600']
+

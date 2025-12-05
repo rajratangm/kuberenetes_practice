@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-toleration-seconds
+  namespace: default
+spec:
+  tolerations:
+  - key: dedicated
+    operator: Equal
+    value: special
+    effect: NoExecute
+    tolerationSeconds: 60
+  containers:
+  - name: app
+    image: nginx:1.21
+

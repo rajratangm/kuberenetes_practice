@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: basic-job
+spec:
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Job completed" && sleep 30']
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-job
+spec:
+  completions: 5
+  parallelism: 2
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Processing" && sleep 10']
+      restartPolicy: Never
+

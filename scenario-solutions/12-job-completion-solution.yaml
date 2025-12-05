@@ -1,0 +1,34 @@
+# Solution for Scenario 12: Job Not Completing
+# Job with correct configuration
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processor
+  namespace: default
+spec:
+  completions: 1
+  parallelism: 1
+  activeDeadlineSeconds: 300
+  backoffLimit: 3
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Processing data" && sleep 30']
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+      restartPolicy: Never
+  # Common fixes:
+  # 1. Check logs: kubectl logs job/data-processor
+  # 2. Fix command if hanging
+  # 3. Increase resource limits if OOMKilled
+  # 4. Check activeDeadlineSeconds if timeout
+  # 5. Verify image exists and is correct
+

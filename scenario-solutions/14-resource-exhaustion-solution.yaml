@@ -1,0 +1,49 @@
+# Solution for Scenario 14: Cluster Resource Exhaustion
+# ResourceQuota and optimized deployment
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: production
+spec:
+  hard:
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+    pods: "50"
+---
+# Optimized deployment with right-sized resources
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: optimized-app
+  namespace: production
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: nginx:1.21
+        resources:
+          requests:
+            cpu: 100m  # Optimized based on actual usage
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+  # Steps to fix:
+  # 1. Identify resource-hungry pods: kubectl top pods --sort-by=cpu
+  # 2. Optimize resource requests to match actual usage
+  # 3. Delete unused resources: kubectl get pods | grep Completed
+  # 4. Increase ResourceQuota if needed
+  # 5. Add more nodes if cluster capacity exhausted
+

@@ -1,0 +1,40 @@
+# Solution for Scenario 13: Multi-Namespace Service Discovery
+# NetworkPolicy allowing cross-namespace access
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-production
+  namespace: development
+spec:
+  podSelector:
+    matchLabels:
+      app: api
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: production
+    ports:
+    - protocol: TCP
+      port: 8080
+---
+# Service in development namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-api
+  namespace: development
+spec:
+  selector:
+    app: api
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+# Pod in production namespace accessing dev-api
+# Use FQDN: dev-api.development.svc.cluster.local
+# Test: kubectl exec prod-app -n production -- wget -O- http://dev-api.development.svc.cluster.local:8080
+

@@ -1,0 +1,48 @@
+# Solution for Scenario 21: Resource Quota Exceeded
+# ResourceQuota and optimized resources
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: production
+spec:
+  hard:
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+    pods: "50"
+---
+# Optimized deployment that fits within quota
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quota-compliant-app
+  namespace: production
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: nginx:1.21
+        resources:
+          requests:
+            cpu: 100m  # Optimized to fit quota
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+  # To fix quota issues:
+  # 1. Check quota: kubectl describe resourcequota compute-quota -n production
+  # 2. Delete unused resources: kubectl get pods -n production | grep Completed
+  # 3. Optimize resource requests
+  # 4. Increase quota if needed: kubectl edit resourcequota compute-quota -n production
+

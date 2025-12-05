@@ -1,0 +1,22 @@
+# Solution for Scenario 1: Pod Pending Issue
+# This is an example of a fixed pod after diagnosing the issue
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  # Removed nodeSelector if it was causing issues
+  # Added proper resource requests if that was the issue
+

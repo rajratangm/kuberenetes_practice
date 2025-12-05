@@ -1,0 +1,43 @@
+# Solution for Scenario 25: Pod Disruption Budget Preventing Updates
+# Deployment and PDB configuration
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: default
+spec:
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1  # Allow 1 pod down during update
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.23
+        ports:
+        - containerPort: 80
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: web-pdb
+spec:
+  minAvailable: 3  # Ensure at least 3 pods available
+  selector:
+    matchLabels:
+      app: web
+  # To allow updates:
+  # Option 1: Temporarily reduce minAvailable
+  # Option 2: Increase maxUnavailable in deployment
+  # Option 3: Scale up before update, then scale down after
+

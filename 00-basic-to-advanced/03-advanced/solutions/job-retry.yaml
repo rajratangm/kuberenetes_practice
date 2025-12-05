@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: retry-job
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.35
+        command: ['sh', '-c', 'exit 1']  # Will fail and retry
+      restartPolicy: Never
+

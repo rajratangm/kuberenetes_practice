@@ -1,0 +1,27 @@
+# Backup and Restore Procedures
+# This is a reference guide
+
+# 1. Backup etcd (on control plane node)
+# ETCDCTL_API=3 etcdctl snapshot save /backup/etcd-snapshot.db \
+#   --endpoints=https://127.0.0.1:2379 \
+#   --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+#   --cert=/etc/kubernetes/pki/etcd/server.crt \
+#   --key=/etc/kubernetes/pki/etcd/server.key
+
+# 2. Export resources
+# kubectl get all,configmap,secret -n <namespace> -o yaml > backup.yaml
+
+# 3. Verify backup
+# ls -lh /backup/etcd-snapshot.db
+# ETCDCTL_API=3 etcdctl snapshot status /backup/etcd-snapshot.db
+
+# 4. Restore (documentation)
+# - Stop kube-apiserver
+# - Restore etcd from snapshot
+# - Update etcd manifest
+# - Restart etcd and kube-apiserver
+# - Verify cluster health
+
+# 5. Restore resources
+# kubectl apply -f backup.yaml
+

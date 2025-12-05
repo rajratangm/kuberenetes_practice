@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: parallel-job
+  namespace: default
+spec:
+  completions: 3
+  parallelism: 2
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Job completion index" && sleep 10']
+      restartPolicy: Never
+

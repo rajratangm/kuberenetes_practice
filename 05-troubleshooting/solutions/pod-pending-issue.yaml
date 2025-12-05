@@ -1,0 +1,18 @@
+# Example: Pod that will be pending due to resource constraints
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pending-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    resources:
+      requests:
+        cpu: 1000  # Requesting 1000 CPUs (will cause pending)
+        memory: 1Ti
+      limits:
+        cpu: 2000
+        memory: 2Ti
+

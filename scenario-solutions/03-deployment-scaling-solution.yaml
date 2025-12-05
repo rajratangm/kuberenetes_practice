@@ -1,0 +1,32 @@
+# Solution for Scenario 3: Deployment Not Scaling
+# Deployment with proper configuration to allow scaling
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  namespace: default
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: nginx:1.21
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+  # Note: Ensure ResourceQuota allows 5 replicas
+  # Check: kubectl get resourcequota
+  # If quota exceeded, either increase quota or reduce resource requests
+

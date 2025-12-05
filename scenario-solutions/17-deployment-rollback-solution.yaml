@@ -1,0 +1,26 @@
+# Solution for Scenario 17: Deployment Rollback Under Pressure
+# Commands for quick rollback (not YAML)
+
+# Step 1: Check rollout history
+# kubectl rollout history deployment/critical-app
+
+# Step 2: View specific revision
+# kubectl rollout history deployment/critical-app --revision=2
+
+# Step 3: Rollback to previous version
+# kubectl rollout undo deployment/critical-app
+
+# OR rollback to specific revision
+# kubectl rollout undo deployment/critical-app --to-revision=1
+
+# Step 4: Monitor rollback
+# kubectl rollout status deployment/critical-app
+# kubectl get pods -l app=critical-app -w
+
+# Step 5: Verify
+# kubectl get deployment critical-app
+# kubectl get pods -l app=critical-app
+# kubectl logs <pod-name> -l app=critical-app
+
+# Note: Rollback is done via kubectl commands, not YAML
+

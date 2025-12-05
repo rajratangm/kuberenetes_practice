@@ -1,0 +1,30 @@
+# Solution for Scenario 20: Multi-Container Pod Coordination
+# Pod with init container and sidecar pattern
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-sidecar
+spec:
+  initContainers:
+  - name: wait-for-app
+    image: busybox:1.35
+    command: ['sh', '-c', 'until nc -z localhost 80; do echo waiting for app; sleep 2; done']
+  containers:
+  - name: app
+    image: nginx:1.21
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: shared
+      mountPath: /shared
+  - name: sidecar
+    image: busybox:1.35
+    command: ['sh', '-c', 'tail -f /shared/app.log']
+    volumeMounts:
+    - name: shared
+      mountPath: /shared
+  volumes:
+  - name: shared
+    emptyDir: {}
+

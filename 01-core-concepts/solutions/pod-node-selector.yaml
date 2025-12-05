@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: compute-pod
+  namespace: default
+spec:
+  nodeSelector:
+    node-type: compute
+  containers:
+  - name: nginx
+    image: nginx:1.21
+

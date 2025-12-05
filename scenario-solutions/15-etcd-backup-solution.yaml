@@ -1,0 +1,25 @@
+# Solution for Scenario 15: etcd Backup and Restore
+# This is a reference guide for etcd backup procedure
+
+# Backup Command (run on control plane node):
+# ETCDCTL_API=3 etcdctl snapshot save /backup/etcd-snapshot-$(date +%Y%m%d).db \
+#   --endpoints=https://127.0.0.1:2379 \
+#   --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+#   --cert=/etc/kubernetes/pki/etcd/server.crt \
+#   --key=/etc/kubernetes/pki/etcd/server.key
+
+# Verify Backup:
+# ETCDCTL_API=3 etcdctl snapshot status /backup/etcd-snapshot-*.db
+
+# Restore Procedure (documentation):
+# 1. Stop kube-apiserver
+# 2. Restore from snapshot:
+#    ETCDCTL_API=3 etcdctl snapshot restore /backup/etcd-snapshot.db \
+#      --data-dir=/var/lib/etcd-backup
+# 3. Update etcd manifest to use new data-dir
+# 4. Restart etcd
+# 5. Restart kube-apiserver
+# 6. Verify cluster health: kubectl get nodes
+
+# Note: Actual restore steps depend on your cluster setup (kubeadm, etc.)
+

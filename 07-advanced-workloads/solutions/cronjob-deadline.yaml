@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: deadline-cronjob
+  namespace: default
+spec:
+  schedule: "*/10 * * * *"
+  startingDeadlineSeconds: 200
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: worker
+            image: busybox:1.35
+            command: ['sh', '-c', 'echo "Job started" && date']
+          restartPolicy: OnFailure

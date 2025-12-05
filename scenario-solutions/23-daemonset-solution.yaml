@@ -1,0 +1,37 @@
+# Solution for Scenario 23: DaemonSet Not Running on All Nodes
+# DaemonSet with proper configuration
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: log-collector
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: log-collector
+  template:
+    metadata:
+      labels:
+        app: log-collector
+    spec:
+      # Remove nodeSelector if too restrictive
+      # Add tolerations if nodes are tainted
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: fluentd
+        image: busybox:1.35
+        command: ['sh', '-c', 'echo "Collecting logs" && sleep 3600']
+  # Common fixes:
+  # 1. Check node selector: kubectl get daemonset log-collector -o yaml | grep nodeSelector
+  # 2. Remove restrictive nodeSelector if present
+  # 3. Add tolerations for tainted nodes
+  # 4. Check node labels: kubectl get nodes --show-labels
+  # 5. Verify: kubectl get pods -l app=log-collector -o wide (should see one per node)
+

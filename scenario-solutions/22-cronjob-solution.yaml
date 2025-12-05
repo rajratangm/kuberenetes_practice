@@ -1,0 +1,33 @@
+# Solution for Scenario 22: CronJob Not Running
+# CronJob with correct configuration
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-job
+  namespace: default
+spec:
+  schedule: "0 2 * * *"  # 2 AM daily
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  suspend: false  # Ensure not suspended
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: backup
+        spec:
+          containers:
+          - name: backup
+            image: busybox:1.35
+            command: ['sh', '-c', 'echo "Backup completed" && date']
+          restartPolicy: OnFailure
+  # Common fixes:
+  # 1. Check if suspended: kubectl get cronjob backup-job -o yaml | grep suspend
+  # 2. Unsuspend: kubectl patch cronjob backup-job -p '{"spec":{"suspend":false}}'
+  # 3. Verify schedule syntax
+  # 4. Check controller manager: kubectl get pods -n kube-system | grep cronjob
+  # 5. Manually trigger: kubectl create job --from=cronjob/backup-job backup-manual-$(date +%s)
+

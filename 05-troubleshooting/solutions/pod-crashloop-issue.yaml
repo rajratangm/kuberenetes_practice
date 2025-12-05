@@ -1,0 +1,12 @@
+# Example: Pod that will crash due to wrong command
+apiVersion: v1
+kind: Pod
+metadata:
+  name: crashing-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    command: ['/bin/sh', '-c', 'exit 1']  # This will cause crash
+

@@ -1,0 +1,23 @@
+# Solution for Scenario 4: ConfigMap Not Loading
+# Pod with correct ConfigMap volume mount
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-app
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: busybox:1.35
+    command: ['sh', '-c', 'ls -la /etc/config && cat /etc/config/* && sleep 3600']
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+      readOnly: true
+  volumes:
+  - name: config-volume
+    configMap:
+      name: app-config
+      # Ensure ConfigMap name matches exactly
+

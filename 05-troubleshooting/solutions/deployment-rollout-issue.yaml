@@ -1,0 +1,22 @@
+# Example: Deployment with image that doesn't exist
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:invalid-tag  # This image doesn't exist
+        ports:
+        - containerPort: 80
+

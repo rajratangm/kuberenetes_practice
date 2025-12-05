@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-pod
+spec:
+  containers:
+  - name: app
+    image: busybox:1.35
+    command: ['sh', '-c', 'ls -la /volumes && sleep 3600']
+    volumeMounts:
+    - name: emptydir
+      mountPath: /volumes/emptydir
+    - name: configmap
+      mountPath: /volumes/configmap
+    - name: secret
+      mountPath: /volumes/secret
+    - name: projected
+      mountPath: /volumes/projected
+    - name: downward
+      mountPath: /volumes/downward
+  volumes:
+  - name: emptydir
+    emptyDir: {}
+  - name: configmap
+    configMap:
+      name: app-config
+  - name: secret
+    secret:
+      secretName: app-secret
+  - name: projected
+    projected:
+      sources:
+      - configMap:
+          name: app-config
+      - secret:
+          name: app-secret
+  - name: downward
+    downwardAPI:
+      items:
+      - path: "pod-name"
+        fieldRef:
+          fieldPath: metadata.name
+      - path: "namespace"
+        fieldRef:
+          fieldPath: metadata.namespace
+

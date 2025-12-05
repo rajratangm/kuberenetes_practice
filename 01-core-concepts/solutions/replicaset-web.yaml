@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: web-rs
+  namespace: default
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: web
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: web
+        component: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+

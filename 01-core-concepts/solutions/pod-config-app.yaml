@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-app
+  namespace: default
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.35
+    command: ['sh', '-c', 'env']
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+  volumes:
+  - name: config-volume
+    configMap:
+      name: app-config
+
