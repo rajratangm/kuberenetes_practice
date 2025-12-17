@@ -1,0 +1,42 @@
+# Fixed version: Deployment with appropriate resource requests
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: default
+spec:
+  hard:
+    requests.cpu: "2"
+    limits.cpu: "4"
+    requests.memory: 2Gi
+    limits.memory: 4Gi
+    pods: "5"  # Fixed: Increased pod limit
+
+---
+# Deployment with reduced resource requests
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  namespace: default
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        resources:
+          requests:
+            cpu: 200m  # Fixed: 5 pods * 200m = 1 CPU (within quota)
+            memory: 200Mi
+          limits:
+            cpu: 500m
+            memory: 400Mi
+

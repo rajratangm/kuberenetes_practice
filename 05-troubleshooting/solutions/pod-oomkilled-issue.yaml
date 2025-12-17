@@ -1,0 +1,17 @@
+# Example: Pod that will be OOMKilled due to low memory limit
+apiVersion: v1
+kind: Pod
+metadata:
+  name: oomkilled-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    resources:
+      requests:
+        memory: 10Mi  # Too low
+      limits:
+        memory: 20Mi  # Too low - will cause OOMKilled
+    command: ['sh', '-c', 'while true; do dd if=/dev/zero of=/tmp/test bs=1M count=50; sleep 1; done']  # Memory intensive
+

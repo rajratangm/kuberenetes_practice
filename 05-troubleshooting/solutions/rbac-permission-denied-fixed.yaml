@@ -1,0 +1,48 @@
+# Fixed version: ServiceAccount with correct permissions
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api-sa
+  namespace: default
+
+---
+# Role with sufficient permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-manager
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]  # Fixed: Added all required verbs
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-manager-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: api-sa
+  namespace: default
+roleRef:
+  kind: Role
+  name: pod-manager
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Pod using ServiceAccount - now has required permissions
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-pod
+  namespace: default
+spec:
+  serviceAccountName: api-sa
+  containers:
+  - name: app
+    image: busybox:1.35
+    command: ['sleep', '3600']
+

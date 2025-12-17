@@ -1,0 +1,33 @@
+# Example: ResourceQuota preventing pod creation
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: production
+spec:
+  hard:
+    requests.cpu: "1"  # Only 1 CPU available
+    limits.cpu: "2"
+    requests.memory: 1Gi
+    limits.memory: 2Gi
+    pods: "2"  # Only 2 pods allowed
+
+---
+# Pod that exceeds quota
+apiVersion: v1
+kind: Pod
+metadata:
+  name: large-pod
+  namespace: production
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    resources:
+      requests:
+        cpu: 2000m  # Exceeds quota (only 1 CPU available)
+        memory: 2Gi  # Exceeds quota (only 1Gi available)
+      limits:
+        cpu: 3000m
+        memory: 4Gi
+

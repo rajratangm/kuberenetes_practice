@@ -1,0 +1,30 @@
+# Fixed version: Service with matching ports
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: default
+spec:
+  selector:
+    app: web
+  ports:
+  - port: 80
+    targetPort: 80  # Fixed: matches pod containerPort
+    protocol: TCP
+
+---
+# Pod that listens on port 80
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod
+  namespace: default
+  labels:
+    app: web
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21
+    ports:
+    - containerPort: 80  # Matches service targetPort
+

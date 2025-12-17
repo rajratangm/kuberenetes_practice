@@ -1,0 +1,14 @@
+# Example: Pod with ImagePullBackOff issue
+# This pod will fail because the image doesn't exist
+apiVersion: v1
+kind: Pod
+metadata:
+  name: imagepullbackoff-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nonexistent-image:latest  # This image doesn't exist - will cause ImagePullBackOff
+    ports:
+    - containerPort: 80
+

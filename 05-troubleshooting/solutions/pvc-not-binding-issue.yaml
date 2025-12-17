@@ -1,0 +1,14 @@
+# Example: PVC that won't bind - no matching PV
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: manual  # No PV with this storage class exists
+

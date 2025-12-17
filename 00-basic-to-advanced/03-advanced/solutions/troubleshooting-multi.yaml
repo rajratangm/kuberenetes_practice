@@ -1,0 +1,53 @@
+# Multi-issue troubleshooting scenario
+# This demonstrates a deployment with multiple problems that need to be fixed
+
+# Problem 1: Deployment with wrong image
+# Problem 2: Service selector mismatch
+# Problem 3: ConfigMap missing
+
+---
+# Deployment with wrong image
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: web
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:invalid-tag  # Problem 1: Invalid image
+        ports:
+        - containerPort: 80
+        env:
+        - name: CONFIG_FILE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config  # Problem 3: ConfigMap doesn't exist
+              key: config_file
+
+---
+# Service with selector mismatch
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: default
+spec:
+  selector:
+    app: web
+    tier: backend  # Problem 2: Selector doesn't match pod labels (frontend vs backend)
+  ports:
+  - port: 80
+    targetPort: 80
+

@@ -9,7 +9,17 @@ Full CKA exam simulations with time limits and scoring.
 - **Passing Score**: 66% (74% for CKA)
 - **Environment**: Real Kubernetes cluster
 
-## Practice Exam 1
+## Practice Exams
+
+**Note**: Full-length practice exams are now located in the `practice-exams/` directory at the root level. This folder contains exam simulation exercises as part of the progressive learning path.
+
+### Available Practice Exams
+
+For complete 2-hour practice exams, see:
+- `../../practice-exams/EXAM_01.md` through `EXAM_10.md`
+- Each exam includes solutions and covers all CKA domains
+
+### Exam Simulation Exercises
 
 ### Time: 2 hours | Questions: 18
 

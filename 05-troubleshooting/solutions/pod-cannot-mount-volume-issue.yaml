@@ -1,0 +1,32 @@
+# Example: Pod that cannot mount PVC - PVC not bound
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: manual  # No matching PV - will stay Pending
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    volumeMounts:
+    - name: data
+      mountPath: /var/www/html
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: data-pvc  # PVC is not bound - pod will be Pending
+

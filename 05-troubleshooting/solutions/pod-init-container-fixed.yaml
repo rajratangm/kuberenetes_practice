@@ -1,0 +1,17 @@
+# Fixed version: Pod with working init container
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-container-failure-pod
+  namespace: default
+spec:
+  initContainers:
+  - name: init-setup
+    image: busybox:1.35
+    command: ['sh', '-c', 'echo "Setup complete" && exit 0']  # Fixed command
+  containers:
+  - name: app
+    image: nginx:1.21
+    ports:
+    - containerPort: 80
+

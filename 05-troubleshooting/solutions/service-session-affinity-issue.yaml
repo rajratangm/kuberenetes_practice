@@ -1,0 +1,14 @@
+# Example: Service without session affinity configured
+apiVersion: v1
+kind: Service
+metadata:
+  name: sticky-service
+  namespace: default
+spec:
+  selector:
+    app: web
+  ports:
+  - port: 80
+    targetPort: 80
+  # Missing: sessionAffinity configuration
+

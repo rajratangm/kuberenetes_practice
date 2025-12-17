@@ -1,0 +1,48 @@
+# Example: ServiceAccount without required permissions
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api-sa
+  namespace: default
+
+---
+# Role with insufficient permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]  # Missing "watch" and "create" - will cause permission denied
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-reader-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: api-sa
+  namespace: default
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# Pod using ServiceAccount - will fail if trying to create pods
+apiVersion: v1
+kind: Pod
+metadata:
+  name: api-pod
+  namespace: default
+spec:
+  serviceAccountName: api-sa
+  containers:
+  - name: app
+    image: busybox:1.35
+    command: ['sleep', '3600']
+

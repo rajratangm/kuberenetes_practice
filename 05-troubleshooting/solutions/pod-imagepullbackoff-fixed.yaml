@@ -1,0 +1,13 @@
+# Fixed version: Pod with correct image
+apiVersion: v1
+kind: Pod
+metadata:
+  name: imagepullbackoff-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21  # Using valid image
+    ports:
+    - containerPort: 80
+

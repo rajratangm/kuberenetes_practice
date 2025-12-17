@@ -1,0 +1,59 @@
+# Fixed version: All issues resolved
+
+---
+# ConfigMap created first
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  config_file: "/etc/config/app.conf"
+  log_level: "info"
+
+---
+# Deployment with correct image and ConfigMap reference
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: web
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21  # Fixed: Valid image
+        ports:
+        - containerPort: 80
+        env:
+        - name: CONFIG_FILE
+          valueFrom:
+            configMapKeyRef:
+              name: app-config  # Fixed: ConfigMap now exists
+              key: config_file
+
+---
+# Service with matching selector
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: default
+spec:
+  selector:
+    app: web
+    tier: frontend  # Fixed: Matches pod labels
+  ports:
+  - port: 80
+    targetPort: 80
+

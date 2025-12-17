@@ -1,0 +1,16 @@
+# Fixed version: Pod with appropriate memory limits
+apiVersion: v1
+kind: Pod
+metadata:
+  name: oomkilled-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    resources:
+      requests:
+        memory: 128Mi
+      limits:
+        memory: 256Mi  # Appropriate limit
+

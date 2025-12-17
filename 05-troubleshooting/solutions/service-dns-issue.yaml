@@ -1,0 +1,31 @@
+# Example: Service DNS issue - Service in wrong namespace or missing
+# This demonstrates a scenario where DNS won't resolve
+# The service might be in a different namespace than expected
+
+# Service in 'production' namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: production  # Service is here
+spec:
+  selector:
+    app: api
+  ports:
+  - port: 80
+    targetPort: 8080
+
+---
+# Pod trying to access service from 'default' namespace
+# DNS query: api-service.default.svc.cluster.local (won't find it)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client-pod
+  namespace: default  # Pod is here - wrong namespace
+spec:
+  containers:
+  - name: client
+    image: busybox:1.35
+    command: ['sleep', '3600']
+

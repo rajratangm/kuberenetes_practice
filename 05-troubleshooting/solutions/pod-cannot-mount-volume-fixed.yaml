@@ -1,0 +1,47 @@
+# Fixed version: Pod with bound PVC
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-manual
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /mnt/data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: manual  # Will bind to PV above
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-pod
+  namespace: default
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    volumeMounts:
+    - name: data
+      mountPath: /var/www/html
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: data-pvc  # PVC is now bound - pod can mount
+

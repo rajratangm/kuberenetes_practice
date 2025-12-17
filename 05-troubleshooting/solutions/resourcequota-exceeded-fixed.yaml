@@ -1,0 +1,33 @@
+# Fixed version: Pod with resources within quota
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: production
+spec:
+  hard:
+    requests.cpu: "1"
+    limits.cpu: "2"
+    requests.memory: 1Gi
+    limits.memory: 2Gi
+    pods: "2"
+
+---
+# Pod with resources within quota limits
+apiVersion: v1
+kind: Pod
+metadata:
+  name: large-pod
+  namespace: production
+spec:
+  containers:
+  - name: app
+    image: nginx:1.21
+    resources:
+      requests:
+        cpu: 200m  # Fixed: Within quota
+        memory: 256Mi  # Fixed: Within quota
+      limits:
+        cpu: 500m  # Fixed: Within quota
+        memory: 512Mi  # Fixed: Within quota
+

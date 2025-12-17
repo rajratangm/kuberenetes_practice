@@ -2,44 +2,88 @@
 
 **Duration**: 2 hours  
 **Total Tasks**: 17  
-**Passing Score**: 66% (74% for CKA)
+**Passing Score**: 74% (66 points minimum)  
+**Exam Format**: Performance-based (hands-on tasks)
 
 ---
 
 ## Task 1: Pod Troubleshooting (10 minutes)
+**Domain**: Troubleshooting (30% weight)
 
-A pod named `web-app` in the `production` namespace is in `CrashLoopBackOff` state. Diagnose and fix the issue.
+**Context**:  
+A developer reports that their application pod is continuously crashing. You need to diagnose and fix the issue.
 
-**Requirements**:
-- Identify the root cause
-- Fix the pod configuration
-- Verify the pod is running
+**Scenario**:  
+A pod named `web-app` in the `production` namespace is in `CrashLoopBackOff` state.
 
-**Hints**:
-- Check pod logs
-- Review pod events
-- Check resource limits
+**Task**:  
+1. Identify the root cause of the pod failure
+2. Fix the pod configuration to resolve the issue
+3. Verify the pod is running successfully
+
+**Verification Steps**:
+```bash
+# Verify pod is running
+kubectl get pod web-app -n production
+# Should show: STATUS = Running
+```
+
+**Hints** (if needed):
+- Check pod logs: `kubectl logs web-app -n production --previous`
+- Review pod events: `kubectl describe pod web-app -n production`
+- Check resource limits and requests
+- Verify image name and pull policy
 
 ---
 
 ## Task 2: Create Deployment (8 minutes)
+**Domain**: Workloads & Scheduling (15% weight)
 
+**Context**:  
+You need to deploy a new API server application with specific resource requirements.
+
+**Task**:  
 Create a deployment named `api-server` in the `default` namespace with the following specifications:
 - Image: `nginx:1.21`
 - Replicas: 3
 - Resource requests: CPU 100m, Memory 128Mi
 - Resource limits: CPU 200m, Memory 256Mi
-- Add a label: `app=api` and `tier=backend`
+- Labels: `app=api` and `tier=backend` (on both deployment and pods)
+
+**Verification Steps**:
+```bash
+# Verify deployment created
+kubectl get deployment api-server
+# Verify pods are running
+kubectl get pods -l app=api,tier=backend
+# Verify resource limits
+kubectl describe deployment api-server | grep -A 5 Resources
+```
 
 ---
 
 ## Task 3: Service Configuration (7 minutes)
+**Domain**: Services & Networking (20% weight)
 
-Create a ClusterIP service named `api-service` that:
+**Context**:  
+The API server deployment needs to be accessible within the cluster via a service.
+
+**Task**:  
+Create a ClusterIP service named `api-service` in the `default` namespace that:
 - Selects pods with labels `app=api` and `tier=backend`
-- Exposes port 80
-- Maps to container port 8080
+- Exposes port 80 (service port)
+- Maps to container port 8080 (target port)
 - Verify the service has endpoints
+
+**Verification Steps**:
+```bash
+# Verify service created
+kubectl get svc api-service
+# Verify endpoints exist
+kubectl get endpoints api-service
+# Should show 3 endpoints (one per pod)
+kubectl describe svc api-service
+```
 
 ---
 

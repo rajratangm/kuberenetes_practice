@@ -1,0 +1,42 @@
+# Example: Deployment with ResourceQuota preventing scaling
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: default
+spec:
+  hard:
+    requests.cpu: "2"  # Only 2 CPU available
+    limits.cpu: "4"
+    requests.memory: 2Gi
+    limits.memory: 4Gi
+    pods: "3"  # Only 3 pods allowed
+
+---
+# Deployment trying to scale beyond quota
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  namespace: default
+spec:
+  replicas: 5  # Wants 5 replicas but quota only allows 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        resources:
+          requests:
+            cpu: 500m  # 5 pods * 500m = 2.5 CPU (exceeds quota)
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+

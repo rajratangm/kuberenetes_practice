@@ -1,0 +1,27 @@
+# Fixed version: Service and Pod in same namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  namespace: default  # Fixed: same namespace as pod
+spec:
+  selector:
+    app: api
+  ports:
+  - port: 80
+    targetPort: 8080
+
+---
+# Pod in same namespace - DNS will resolve
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client-pod
+  namespace: default  # Same namespace as service
+spec:
+  containers:
+  - name: client
+    image: busybox:1.35
+    command: ['sleep', '3600']
+    # Can now access: api-service.default.svc.cluster.local or just api-service
+
